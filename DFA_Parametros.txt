@@ -1,0 +1,115 @@
+================================================================================
+                    PARÁMETROS DEL AUTÓMATA FINITO DETERMINISTA (DFA)
+================================================================================
+
+Un DFA se define formalmente como una tupla M = (Q, Σ, δ, q0, F)
+
+================================================================================
+1. CONJUNTO DE ESTADOS (Q)
+================================================================================
+Q = {q0}
+
+Descripción: El conjunto de todos los estados posibles del autómata.
+- q0: Estado inicial y único estado del autómata
+
+
+================================================================================
+2. ALFABETO (Σ)
+================================================================================
+Σ = {A1, A2, A3, ..., A1000, G90, G120, G180, G40, T1, T2, ..., T10, F, RESET}
+
+Descripción: El conjunto de símbolos (comandos) que el autómata puede procesar.
+
+Categorías de comandos:
+  - A [1-1000]: Comando de avance (dibuja línea de longitud n)
+    Ejemplos: A100, A200, A50, A150, etc.
+  
+  - G [ángulos]: Comando de giro (rota el ángulo actual)
+    Símbolos válidos: G90, G120, G180, G40
+  
+  - T [1-10]: Comando de círculo (dibuja círculo de tamaño n)
+    Ejemplos: T1, T2, T3, ..., T10
+  
+  - F: Comando especial para cambiar a la siguiente posición en el lienzo
+  
+  - RESET: Comando para limpiar el lienzo y reiniciar
+
+
+================================================================================
+3. FUNCIÓN DE TRANSICIÓN (δ)
+================================================================================
+δ: Q × Σ → Q
+
+Para este DFA simplificado:
+  δ(q0, A[1-1000]) → q0
+  δ(q0, G90) → q0
+  δ(q0, G120) → q0
+  δ(q0, G180) → q0
+  δ(q0, G40) → q0
+  δ(q0, T[1-10]) → q0
+  δ(q0, F) → q0
+  δ(q0, RESET) → q0
+
+Descripción: Define cómo el autómata transiciona de un estado a otro
+cuando recibe un símbolo del alfabeto.
+
+Comportamiento: Desde q0, cualquier comando válido mantiene el autómata en q0.
+El autómata NO rechaza ninguna combinación de comandos válidos.
+
+
+================================================================================
+4. ESTADO INICIAL (q0)
+================================================================================
+q0 = q0
+
+Descripción: El estado en el que el autómata comienza su ejecución.
+Cuando inicia el programa, siempre comienza en q0.
+
+
+================================================================================
+5. ESTADOS ACEPTADORES (F)
+================================================================================
+F = {q0}
+
+Descripción: El conjunto de estados finales o aceptadores.
+Una cadena es aceptada si, después de procesar todos sus símbolos,
+el autómata se encuentra en uno de estos estados.
+
+En este caso: El autómata siempre termina en q0, por lo que siempre acepta
+cualquier secuencia de comandos válidos.
+
+
+================================================================================
+EJEMPLO DE EJECUCIÓN
+================================================================================
+
+Entrada: A200 G90 A200 G90 A200 G90 A200
+
+Secuencia de transiciones:
+  Estado actual  | Símbolo procesado | Estado siguiente
+  ─────────────────────────────────────────────────────
+       q0       |       A200        |        q0
+       q0       |       G90         |        q0
+       q0       |       A200        |        q0
+       q0       |       G90         |        q0
+       q0       |       A200        |        q0
+       q0       |       G90         |        q0
+       q0       |       A200        |        q0
+
+Resultado final: Estado = q0 ✓ ACEPTADO (q0 ∈ F)
+
+
+================================================================================
+NOTACIÓN FORMAL COMPLETA
+================================================================================
+
+M = (Q, Σ, δ, q0, F)
+
+Donde:
+  Q  = {q0}
+  Σ  = {A₁, A₂, ..., A₁₀₀₀, G₉₀, G₁₂₀, G₁₈₀, G₄₀, T₁, T₂, ..., T₁₀, F, RESET}
+  δ  = Función de transición (descrita arriba)
+  q0 = q0
+  F  = {q0}
+
+===============================================================================
