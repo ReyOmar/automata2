@@ -6,6 +6,14 @@ import math
 from PIL import Image, ImageTk
 import os
 
+# ------------------------------------------------------------
+# Interfaz principal:
+# - Lee comandos del usuario.
+# - Valida la cadena usando el DFA.
+# - Dibuja de forma animada en un canvas dividido en 4 cuadrantes.
+# - Muestra estados, GIF de carga y tabla de transiciones.
+# ------------------------------------------------------------
+
 # Estado global
 current_x = 125
 current_y = 125
@@ -25,6 +33,13 @@ positions = [
 ]
 
 def draw_command(canvas, cmd, state_text=None):
+    # --------------------------------------------------------
+    # Ejecuta un comando individual sobre el lienzo:
+    # - A# mueve la posición y dibuja una línea.
+    # - G# rota el ángulo actual.
+    # - F cambia al siguiente cuadrante disponible.
+    # Si se recibe state_text, también marca visualmente el estado.
+    # --------------------------------------------------------
     global current_x, current_y, current_angle, figure_count
     
     # Mostrar el estado ANTES de ejecutar el comando
@@ -68,7 +83,10 @@ def draw_command(canvas, cmd, state_text=None):
         else:
             messagebox.showwarning("Aviso", "No hay más cuadrantes disponibles.")
 def load_gif_frames():
-    """Cargar los frames del GIF"""
+    # --------------------------------------------------------
+    # Carga todos los frames del GIF en memoria para animarlos en
+    # la interfaz sin bloquear el flujo de dibujo.
+    # --------------------------------------------------------
     global gif_frames
     gif_path = "icons8-python.gif"
     if os.path.exists(gif_path):
@@ -85,7 +103,10 @@ def load_gif_frames():
             print(f"Error cargando GIF: {e}")
 
 def animate_gif():
-    """Animar el GIF en el canvas"""
+    # --------------------------------------------------------
+    # Muestra frame a frame el GIF y programa la siguiente llamada
+    # usando after() para lograr animación continua.
+    # --------------------------------------------------------
     global gif_animation_id, current_gif_frame, gif_label
     
     if not gif_frames or gif_label is None:
@@ -102,7 +123,7 @@ def animate_gif():
     gif_animation_id = root.after(50, animate_gif)
 
 def show_loading_gif():
-    """Mostrar el GIF de carga en el centro del canvas"""
+    # Muestra el GIF en el centro del canvas y arranca su animación.
     global gif_label, current_gif_frame
     
     if not gif_frames:
@@ -114,7 +135,7 @@ def show_loading_gif():
     animate_gif()
 
 def hide_loading_gif():
-    """Ocultar el GIF de carga"""
+    # Detiene y oculta el GIF de carga si está activo.
     global gif_animation_id, gif_label
     
     if gif_animation_id:
@@ -125,7 +146,11 @@ def hide_loading_gif():
         gif_label.place_forget()
         gif_label = None
 def show_transition_table():
-    """Mostrar la tabla de transición del autómata (solo transiciones A)"""
+    # --------------------------------------------------------
+    # Construye una ventana con tabla de transiciones.
+    # Solo se muestran transiciones de tipo A# (movimiento),
+    # que son las que representan avance entre estados.
+    # --------------------------------------------------------
     # Crear ventana para la tabla
     table_window = tk.Toplevel(root)
     table_window.title("Tabla de Transición - Movimientos")
@@ -178,6 +203,11 @@ def show_transition_table():
     info_label.pack()
 
 def draw_commands_step_by_step(canvas, commands, index=0, states_list=None):
+    # --------------------------------------------------------
+    # Dibuja los comandos de forma secuencial con retardo fijo.
+    # Inicio: muestra GIF.
+    # Fin: oculta GIF, limpia entrada y abre tabla de transición.
+    # --------------------------------------------------------
     if index == 0:
         # Mostrar GIF al comenzar
         show_loading_gif()
@@ -197,6 +227,13 @@ def draw_commands_step_by_step(canvas, commands, index=0, states_list=None):
     root.after(700, draw_commands_step_by_step, canvas, commands, index + 1, states_list)
 
 def process_input(event=None):
+    # --------------------------------------------------------
+    # Flujo principal al presionar Enter:
+    # 1) Lee y tokeniza entrada.
+    # 2) Valida tokens y pertenencia al alfabeto.
+    # 3) Verifica aceptación con el DFA.
+    # 4) Inicia dibujo animado y marcado de estados.
+    # --------------------------------------------------------
     global current_x, current_y, current_angle
     input_text = entry.get().strip()
     if not input_text:
@@ -242,6 +279,9 @@ def process_input(event=None):
     # Luego de 500ms, comenzar a dibujar los comandos
     root.after(500, draw_commands_step_by_step, canvas, drawing_tokens, 0, states_list)
 
+# ------------------------------------------------------------
+# Construcción de la ventana principal y widgets base.
+# ------------------------------------------------------------
 root = tk.Tk()
 root.title("Dibujador de Figuras con Autómata")
 
