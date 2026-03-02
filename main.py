@@ -60,10 +60,6 @@ def draw_command(canvas, cmd, state_text=None):
     elif cmd.startswith('G'):
         degrees = int(cmd[1:])
         current_angle = (current_angle + degrees) % 360
-    elif cmd.startswith('T'):
-        size = int(cmd[1:])
-        radius = size * 2
-        canvas.create_oval(current_x - radius, current_y - radius, current_x + radius, current_y + radius, outline="black", width=2)
     elif cmd == 'F':
         # Mover a la siguiente posición en el grid (4 cuadrantes)
         if figure_count < len(positions) - 1:
@@ -72,17 +68,6 @@ def draw_command(canvas, cmd, state_text=None):
             current_angle = 0
         else:
             messagebox.showwarning("Aviso", "No hay más cuadrantes disponibles.")
-    elif cmd == 'RESET':
-        canvas.delete("all")
-        figure_count = 0
-        current_x, current_y, current_angle = positions[0]
-        # Redibujar las líneas divisoras
-        canvas.create_line(250, 0, 250, 500, fill="lightgray", width=1, dash=(4, 4))
-        canvas.create_line(0, 250, 500, 250, fill="lightgray", width=1, dash=(4, 4))
-        canvas.create_text(125, 15, text="I", fill="lightgray", font=("Arial", 10, "bold"))
-        canvas.create_text(375, 15, text="II", fill="lightgray", font=("Arial", 10, "bold"))
-        canvas.create_text(125, 485, text="III", fill="lightgray", font=("Arial", 10, "bold"))
-        canvas.create_text(375, 485, text="IV", fill="lightgray", font=("Arial", 10, "bold"))
 def load_gif_frames():
     """Cargar los frames del GIF"""
     global gif_frames
@@ -235,8 +220,8 @@ def process_input(event=None):
         messagebox.showerror("Error", "Esto no pertenece al autómata.")
         return
     
-    # Filtrar solo comandos de navegación (F, RESET)
-    drawing_tokens = [token for token in tokens if token not in ['F', 'RESET']]
+    # Filtrar solo comandos de dibujo (A y G), excluyendo cambio de cuadrícula
+    drawing_tokens = [token for token in tokens if token != 'F']
     
     # Si solo hay comandos de navegación, ejecutarlos sin dibujar
     if not drawing_tokens:
@@ -252,7 +237,7 @@ def process_input(event=None):
     # Usar estados reales del recorrido secuencial del DFA (solo comandos de dibujo)
     states_list = [
         next_state for (_, symbol, next_state) in dfa.last_transitions
-        if symbol not in ['F', 'RESET']
+        if symbol != 'F'
     ]
     
     # Luego de 500ms, comenzar a dibujar los comandos

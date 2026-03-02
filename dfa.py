@@ -10,6 +10,7 @@ class DFA:
 
         self.current_state = start_state
         self.current_index = 0
+        self.total_line_commands = 0
         self.last_tokens = []
         self.last_states = [start_state]
         self.last_transitions = []
@@ -17,6 +18,7 @@ class DFA:
     def reset(self):
         self.current_state = self.start_state
         self.current_index = 0
+        self.total_line_commands = 0
         self.last_states = [self.start_state]
         self.last_transitions = []
         self.transitions = {}
@@ -25,13 +27,21 @@ class DFA:
         if symbol not in self.alphabet:
             return False
 
-        origin = f'q{self.current_index}'
-        self.current_index += 1
-        destination = f'q{self.current_index}'
+        origin = self.current_state
 
-        self.current_state = destination
-        if destination not in self.states:
-            self.states.append(destination)
+        if symbol.startswith('A'):
+            self.current_index += 1
+
+            if self.total_line_commands > 0 and self.current_index == self.total_line_commands:
+                destination = self.start_state
+            else:
+                destination = f'q{self.current_index}'
+                if destination not in self.states:
+                    self.states.append(destination)
+
+            self.current_state = destination
+        else:
+            destination = self.current_state
 
         self.transitions[(origin, symbol)] = destination
         self.last_transitions.append((origin, symbol, destination))
@@ -50,6 +60,7 @@ class DFA:
             return False
 
         self.last_tokens = tokens
+        self.total_line_commands = sum(1 for token in tokens if token.startswith('A'))
 
         for token in tokens:
             if token not in self.alphabet:
@@ -62,7 +73,7 @@ class DFA:
 
     def tokenize(self, string):
         string = string.upper()
-        pattern = r'(A\d+|G\d+|T\d+|F|RESET)'
+        pattern = r'(A\d+|G\d+|F)'
         return re.findall(pattern, string)
 
 
@@ -72,8 +83,8 @@ start_state = 'q0'
 # ESTE SERIA EL DE ESTADO
 states = ['q0']
 
-# ALFABETO O LENGIAJE (símbolos permitidos)
-alphabet = ['A' + str(i) for i in range(1, 1001)] + ['G90', 'G120', 'G180', 'G40'] + ['T' + str(i) for i in range(1, 11)] + ['F', 'RESET']
+# ALFABETO O LENGUAJE (símbolos permitidos)
+alphabet = ['A' + str(i) for i in range(1, 1001)] + ['G90', 'G120', 'G180', 'G40'] + ['F']
 
 # PARÁMETRO 3: TRANSICIONES (función de transición)
 # Se generan dinámicamente durante la ejecución:
