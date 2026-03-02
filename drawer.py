@@ -13,10 +13,3 @@ def draw_figure(commands):
             angle = int(cmd[1:])
             t.right(angle)
     screen.mainloop()
-
-# Ejemplo de uso
-if __name__ == "__main__":
-    # Cadena para cuadrado: A100 G90 A100 G90 A100 G90 A100 G90
-    cadena_cuadrado = "A100G90A100G90A100G90A100G90"
-    commands = re.findall(r'A\d+|G\d+', cadena_cuadrado)
-    draw_figure(commands)

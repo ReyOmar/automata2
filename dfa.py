@@ -21,7 +21,6 @@ class DFA:
         self.total_line_commands = 0
         self.last_states = [self.start_state]
         self.last_transitions = []
-        self.transitions = {}
 
     def process_symbol(self, symbol):
         if symbol not in self.alphabet:
@@ -77,22 +76,16 @@ class DFA:
         return re.findall(pattern, string)
 
 
-# ESTADO INICIAL
-start_state = 'q0'
-
-# ESTE SERIA EL DE ESTADO
-states = ['q0']
-
 # ALFABETO O LENGUAJE (símbolos permitidos)
 alphabet = ['A' + str(i) for i in range(1, 1001)] + ['G90', 'G120', 'G180', 'G40'] + ['F']
 
-# PARÁMETRO 3: TRANSICIONES (función de transición)
-# Se generan dinámicamente durante la ejecución:
-# q0 --s1--> q1 --s2--> q2 --s3--> ...
-transitions = {}
+states = ['q0']
 
-# ESTADOS DE ACEPTACIÓN
-# Se ajusta dinámicamente al estado final alcanzado en cada ejecución.
+# ESTADO INICIAL
+start_state = 'q0'
+
 accept_states = ['q0']
+
+transitions = {}
 
 dfa = DFA(states, alphabet, transitions, start_state, accept_states)

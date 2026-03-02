@@ -16,8 +16,7 @@ current_gif_frame = 0
 gif_frames = []
 gif_label = None
 
-# Posiciones para 4 cuadrantes (plano cartesiano 2x2)
-# Canvas 500x500 dividido en 4 cuadrantes iguales
+
 positions = [
     (125, 125),   # Cuadrante 1: arriba-izquierda
     (375, 125),   # Cuadrante 2: arriba-derecha
@@ -194,7 +193,7 @@ def draw_commands_step_by_step(canvas, commands, index=0, states_list=None):
     # Usar q1, q2, q3... para los comandos (index+1)
     state_text = states_list[index] if states_list and index < len(states_list) else None
     draw_command(canvas, cmd, state_text)
-    # Dibujar siguiente después de 1000ms
+    
     root.after(700, draw_commands_step_by_step, canvas, commands, index + 1, states_list)
 
 def process_input(event=None):
@@ -234,7 +233,7 @@ def process_input(event=None):
     canvas.create_oval(current_x - 3, current_y - 3, current_x + 3, current_y + 3, fill="red", outline="red")
     canvas.create_text(current_x - 15, current_y - 15, text="q0", fill="red", font=("Arial", 8, "bold"), anchor="center")
     
-    # Usar estados reales del recorrido secuencial del DFA (solo comandos de dibujo)
+    
     states_list = [
         next_state for (_, symbol, next_state) in dfa.last_transitions
         if symbol != 'F'
